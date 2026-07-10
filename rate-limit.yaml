@@ -1,0 +1,28 @@
+apiVersion: gateway.networking.x-k8s.io/v1alpha1
+kind: XBackendTrafficPolicy
+
+metadata:
+  name: rate-limit-policy
+
+spec:
+
+  targetRefs:
+
+    - group: ""
+      kind: Service
+      name: nginx-service
+
+    - group: ""
+      kind: Service
+      name: httpbin-service
+
+    - group: ""
+      kind: Service
+      name: echoserver-service
+
+
+  rateLimit:
+
+    requests: 10
+
+    interval: 1m

@@ -1,0 +1,95 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: company-routing
+spec:
+  parentRefs:
+    - name: company-gateway
+
+  rules:
+
+    # NGINX - web.company.local
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /web
+
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+
+        - type: RequestHeaderModifier
+          requestHeaderModifier:
+            add:
+              - name: X-Application
+                value: nginx-web
+
+      backendRefs:
+        - name: nginx-service
+          port: 80
+
+      timeouts:
+        request: 10s
+
+
+    # HTTPBIN - api.company.local
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api
+
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+
+        - type: RequestHeaderModifier
+          requestHeaderModifier:
+            add:
+              - name: X-Application
+                value: httpbin-api
+
+      backendRefs:
+        - name: httpbin-service
+          port: 80
+
+      timeouts:
+        request: 10s
+
+
+    # ECHOSERVER - test.company.local
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /test
+
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+
+        - type: RequestHeaderModifier
+          requestHeaderModifier:
+            add:
+              - name: X-Application
+                value: echoserver-test
+
+      backendRefs:
+        - name: echoserver-service
+          port: 80
+
+      timeouts:
+        request: 10s
+
+
+  hostnames:
+    - web.company.local
+    - api.company.local
+    - test.company.local
