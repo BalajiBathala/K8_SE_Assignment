@@ -1,0 +1,39 @@
+apiVersion: gateway.networking.x-k8s.io/v1alpha1
+kind: XBackendTrafficPolicy
+
+metadata:
+  name: retry-policy
+
+spec:
+
+  targetRefs:
+
+    - group: ""
+      kind: Service
+      name: nginx-service
+
+
+    - group: ""
+      kind: Service
+      name: httpbin-service
+
+
+    - group: ""
+      kind: Service
+      name: echoserver-service
+
+
+  retryConstraint:
+
+    budget:
+
+      percent: 20
+
+      interval: 10s
+
+
+    minRetryRate:
+
+      count: 10
+
+      interval: 1s
