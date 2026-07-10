@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: company-tls
+spec:
+  secretName: company-tls-secret
+  dnsNames:
+    - web.company.local
+    - api.company.local
+    - test.company.local
+  issuerRef:
+    name: ca-clusterissuer
+    kind: ClusterIssuer
